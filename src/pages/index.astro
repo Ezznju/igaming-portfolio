@@ -85,6 +85,13 @@ const stats = [
 	{ value: 5, suffix: "+", label: "Years Experience", color: "from-secondary to-secondary-dark" },
 	{ value: 50, suffix: "+", label: "Happy Clients", color: "from-accent to-accent-dark" }
 ];
+
+const clientLogos = [
+	{ name: "BetRoyal", image: "/images/logos/betroyal.png" },
+	{ name: "SpinCity", image: "/images/logos/spincity.png" },
+	{ name: "StrikeWin", image: "/images/logos/strikewin.png" },
+	{ name: "GrandPlay", image: "/images/logos/grandplay.png" }
+];
 ---
 
 <html lang="en">
@@ -234,9 +241,13 @@ const stats = [
 
 				<!-- Client Logos Grid -->
 				<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 items-center">
-					{[1, 2, 3, 4].map((i) => (
-						<div class="bg-gradient-to-br from-gray-50 to-gray-100 h-28 flex items-center justify-center rounded-xl border border-gray-200 hover:shadow-lg hover:border-primary/20 transition-all duration-300 group card-lift scroll-reveal">
-							<span class="text-gray-400 font-semibold group-hover:text-primary transition-colors">Client Logo {i}</span>
+					{clientLogos.map((logo, index) => (
+						<div class="bg-white h-32 flex items-center justify-center rounded-xl border border-gray-100 hover:shadow-xl hover:border-primary/20 transition-all duration-300 group card-lift scroll-reveal p-6" style={`animation-delay: ${index * 0.1}s`}>
+							<img 
+								src={logo.image} 
+								alt={`${logo.name} Logo`} 
+								class="max-h-full max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-500 opacity-60 group-hover:opacity-100 transform group-hover:scale-110" 
+							/>
 						</div>
 					))}
 				</div>
