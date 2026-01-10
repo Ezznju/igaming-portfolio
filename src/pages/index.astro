@@ -30,26 +30,29 @@ const portfolioItems = [
 		gradient: "from-primary to-primary-light",
 		tag: "Casino Review",
 		tagColor: "bg-primary/10 text-primary",
-		title: "Lucky Star Casino Review",
-		description: "Comprehensive 2,000-word casino review with game selection analysis"
+		title: "Zeus Slot Canada Review",
+		description: "In-depth slot game review covering gameplay, features, and player experience",
+		link: "https://medium.com/@ezzekielnjuguna/zeus-slot-canada-review-6a661ca09e2a"
 	},
 	{
 		category: "sports",
-		icon: "⚽",
+		icon: "📈",
 		gradient: "from-secondary to-secondary-dark",
-		tag: "Sports Betting",
+		tag: "Polymarket Strategy",
 		tagColor: "bg-secondary/10 text-secondary-dark",
-		title: "Premier League Betting Guide",
-		description: "Complete betting strategy guide with odds analysis"
+		title: "How Smart Traders Beat You on Polymarket",
+		description: "Deep dive into live market strategies and trading tactics",
+		link: "https://medium.com/@ezzekielnjuguna/how-smart-traders-beat-you-on-polymarket-live-markets-6ade71098c5b"
 	},
 	{
 		category: "seo",
-		icon: "🎯",
+		icon: "💰",
 		gradient: "from-accent to-accent-dark",
-		tag: "SEO Content",
+		tag: "Trading Insights",
 		tagColor: "bg-accent/10 text-accent-dark",
-		title: "SEO Blog Post Series",
-		description: "10-part blog series driving 300% organic traffic increase"
+		title: "The Casino Hack Creating Polymarket Millionaires",
+		description: "Viral piece on probability strategies from casino gaming to prediction markets",
+		link: "https://medium.com/@ezzekielnjuguna/this-boring-2010s-casino-hack-is-creating-a-new-wave-of-millionaires-on-polymarket-and-nobody-is-c1819923573b"
 	}
 ];
 
@@ -381,10 +384,10 @@ const stats = [
 								<div class={`inline-block px-3 py-1 ${item.tagColor} rounded-full text-xs font-semibold mb-3`}>{item.tag}</div>
 								<h3 class="text-xl font-bold mb-2 text-dark group-hover:text-primary transition-colors">{item.title}</h3>
 								<p class="text-gray-600 mb-4">{item.description}</p>
-								<a href="#" class="inline-flex items-center text-primary font-semibold hover:text-secondary transition-colors group/link">
-									View Sample
+								<a href={item.link} target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary font-semibold hover:text-secondary transition-colors group/link">
+									Read on Medium
 									<svg class="w-5 h-5 ml-2 group-hover/link:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
 									</svg>
 								</a>
 							</div>
