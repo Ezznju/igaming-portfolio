@@ -5,32 +5,28 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#1e3a8a',
-          light: '#1e40af',
-          dark: '#1e3a8a',
+          DEFAULT: '#0a0a0a', // Deep Noir
+          light: '#1a1a1a',
+          dark: '#000000',
         },
         secondary: {
-          DEFAULT: '#f59e0b',
-          dark: '#d97706',
+          DEFAULT: '#ccff00', // Acid Lime
+          light: '#d9ff33',
+          dark: '#99cc00',
         },
         accent: {
-          DEFAULT: '#10b981',
-          dark: '#059669',
+          DEFAULT: '#7c3aed', // Hyper Violet
+          light: '#9d67f0',
+          dark: '#5b21b6',
         },
-        dark: '#1f2937',
-        light: '#f9fafb',
+        dark: '#050505',
+        light: '#f2f2f2', // Off-white text
+        surface: '#121212', // Card backgrounds
       },
       fontFamily: {
-        sans: [
-          'Inter',
-          '-apple-system',
-          'BlinkMacSystemFont',
-          'Segoe UI',
-          'Roboto',
-          'Helvetica',
-          'Arial',
-          'sans-serif',
-        ],
+        sans: ['Space Grotesk', 'sans-serif'],
+        heading: ['Bricolage Grotesque', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.6s ease-out forwards',

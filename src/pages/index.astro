@@ -131,8 +131,182 @@ const clientLogos = [
 			"email": "ezzekielnjuguna.en@gmail.com",
 			"knowsAbout": ["Casino Content", "Sports Betting", "SEO Writing", "iGaming Industry"]
 		})}></script>
+		<!-- GSAP & SplitType -->
+		<script>
+			import { gsap } from "gsap";
+			import { ScrollTrigger } from "gsap/ScrollTrigger";
+			import SplitType from "split-type";
+
+			gsap.registerPlugin(ScrollTrigger);
+
+			// 1. Hero Text Reveal (Load)
+			const titleText = new SplitType('#hero-title', { types: 'chars' });
+			const subtitleText = new SplitType('#hero-subtitle', { types: 'words' });
+
+			const tl = gsap.timeline();
+
+			tl.from(titleText.chars, {
+				y: 100,
+				opacity: 0,
+				rotateX: -90,
+				stagger: 0.02,
+				duration: 1,
+				ease: "back.out(1.7)",
+			})
+			.from(subtitleText.words, {
+				y: 20,
+				opacity: 0,
+				stagger: 0.1,
+				duration: 0.8,
+				ease: "power2.out"
+			}, "-=0.5")
+			.from(".hero-btn", {
+				scale: 0.5,
+				opacity: 0,
+				duration: 0.5,
+				ease: "back.out(1.7)"
+			}, "-=0.2");
+
+			// 2. Scroll-to-Roll Effect (Hero Parallax)
+			gsap.to(".hero-content", {
+				yPercent: -50,
+				ease: "none",
+				scrollTrigger: {
+					trigger: "#hero",
+					start: "top top",
+					end: "bottom top",
+					scrub: true
+				}
+			});
+
+			// 3. Magnetic Navigation
+			const nav = document.querySelector('nav');
+			let lastScroll = 0;
+
+			window.addEventListener("scroll", () => {
+				const currentScroll = window.pageYOffset;
+				if (currentScroll > 50 && currentScroll > lastScroll) {
+					// Scrolling Down
+					gsap.to(nav, { yPercent: -100, duration: 0.3, ease: "power2.inOut" });
+				} else {
+					// Scrolling Up
+					gsap.to(nav, { yPercent: 0, duration: 0.3, ease: "power2.inOut" });
+				}
+				lastScroll = currentScroll;
+			});
+
+			// 4. Card Stacking Effect (Services & Portfolio)
+			const cards = gsap.utils.toArray('.tilt-card');
+			cards.forEach((card, i) => {
+				gsap.set(card, { transformStyle: "preserve-3d" });
+				
+				ScrollTrigger.create({
+					trigger: card,
+					start: "top bottom-=100",
+					end: "bottom top",
+					onEnter: () => {
+						gsap.fromTo(card, 
+							{ opacity: 0, y: 50, rotationX: 10 },
+							{ opacity: 1, y: 0, rotationX: 0, duration: 0.8, ease: "power3.out" }
+						);
+					}
+				});
+			});
+
+			// 5. Marquee Effect for Logos
+			const marquee = document.querySelector('.marquee-track');
+			// 6. Portfolio Filter Logic
+			const filterButtons = document.querySelectorAll('.portfolio-filter');
+			const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+			filterButtons.forEach(button => {
+				button.addEventListener('click', () => {
+					const filter = button.dataset.filter;
+					
+					// Update Active State
+					filterButtons.forEach(btn => {
+						btn.classList.remove('bg-primary', 'text-white');
+						btn.classList.add('bg-white', 'text-dark');
+					});
+					button.classList.remove('bg-white', 'text-dark');
+					button.classList.add('bg-primary', 'text-white');
+					
+					// Animate Filtering
+					const timeline = gsap.timeline();
+					
+					portfolioItems.forEach(item => {
+						const category = item.dataset.category;
+						const shouldShow = filter === 'all' || category === filter;
+						
+						if (shouldShow) {
+							item.style.display = 'block';
+							timeline.to(item, { autoAlpha: 1, scale: 1, duration: 0.3 }, "<0.05");
+						} else {
+							timeline.to(item, { autoAlpha: 0, scale: 0.8, duration: 0.3, onComplete: () => {
+								item.style.display = 'none';
+							}}, "<");
+						}
+					});
+				});
+			});
+
+			// 7. Form Handling
+			const form = document.getElementById('contact-form');
+			const submitBtn = document.getElementById('submit-btn');
+			const btnText = document.getElementById('btn-text');
+			const btnSpinner = document.getElementById('btn-spinner');
+			const formStatus = document.getElementById('form-status');
+
+			if(form) {
+				form.addEventListener('submit', async (e) => {
+					e.preventDefault();
+					btnText.textContent = 'Sending...';
+					btnSpinner.classList.remove('hidden');
+					submitBtn.disabled = true;
+					
+					try {
+						const response = await fetch(form.action, {
+							method: 'POST',
+							body: new FormData(form),
+							headers: { 'Accept': 'application/json' }
+						});
+						
+						if (response.ok) {
+							formStatus.className = 'mb-6 p-4 rounded-lg form-success';
+							formStatus.textContent = 'Message sent! Let\'s build something great.';
+							formStatus.classList.remove('hidden');
+							form.reset();
+						} else {
+							throw new Error('Failed');
+						}
+					} catch (error) {
+						formStatus.className = 'mb-6 p-4 rounded-lg form-error';
+						formStatus.textContent = 'Something went wrong. Please try again.';
+						formStatus.classList.remove('hidden');
+					} finally {
+						btnText.textContent = 'Send Message';
+						btnSpinner.classList.add('hidden');
+						submitBtn.disabled = false;
+					}
+				});
+			}
+
+			// 8. GSAP Counter Animation
+			gsap.utils.toArray(".counter").forEach(counter => {
+				const target = counter.dataset.target;
+				const tl = gsap.timeline({
+					scrollTrigger: { trigger: counter, start: "top 80%" }
+				});
+				tl.from(counter, {
+					innerText: 0,
+					duration: 2,
+					snap: { innerText: 1 },
+					ease: "power2.out"
+				});
+			});
+		</script>
 	</head>
-	<body class="font-sans text-gray-900 bg-light antialiased">
+	<body class="bg-dark text-light antialiased font-sans overflow-x-hidden selection:bg-secondary selection:text-dark">
 
 		<!-- Sticky Navigation -->
 		<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 translate-y-[-100%]">
@@ -155,76 +329,43 @@ const clientLogos = [
 		</nav>
 
 		<!-- Hero Section -->
-		<section class="min-h-screen flex items-center justify-center px-4 py-16 bg-gradient-to-br from-primary via-primary-light to-primary text-white relative overflow-hidden">
-			<!-- Animated Background Elements -->
-			<div class="absolute inset-0 overflow-hidden pointer-events-none">
-				<div class="absolute top-0 left-0 w-96 h-96 bg-secondary/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-float"></div>
-				<div class="absolute bottom-0 right-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 animate-float" style="animation-delay: 3s;"></div>
-				<div class="absolute top-1/2 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-2xl animate-pulse-scale"></div>
-				<div class="absolute bottom-1/4 right-1/4 w-48 h-48 bg-secondary/10 rounded-full blur-2xl animate-float" style="animation-delay: 1.5s;"></div>
-				
-				<!-- Decorative shapes -->
-				<div class="absolute top-20 right-20 w-4 h-4 bg-secondary rounded-full animate-bounce"></div>
-				<div class="absolute top-40 right-40 w-3 h-3 bg-accent rounded-full animate-bounce" style="animation-delay: 0.5s;"></div>
-				<div class="absolute bottom-40 left-20 w-3 h-3 bg-white/50 rounded-full animate-bounce" style="animation-delay: 1s;"></div>
+		<section id="hero" class="relative h-screen flex items-center justify-center overflow-hidden bg-dark">
+			<!-- Abstract Background -->
+			<div class="absolute inset-0 z-0">
+				<div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(124,58,237,0.15),transparent_70%)]"></div>
+				<div class="absolute w-[800px] h-[800px] bg-secondary/5 rounded-full blur-[120px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mix-blend-screen animate-pulse-slow"></div>
 			</div>
 
-			<div class="max-w-4xl mx-auto text-center relative z-10">
-				<!-- Badge -->
-				<div class="inline-flex items-center px-4 py-2 bg-secondary/20 backdrop-blur-sm rounded-full mb-8 border border-secondary/30 animate-fade-in">
-					<span class="w-2 h-2 bg-accent rounded-full mr-2 animate-pulse"></span>
-					<span class="text-sm font-medium text-secondary">Available for New Projects</span>
+			<div class="relative z-10 text-center max-w-5xl mx-auto px-4 hero-content will-change-transform">
+				<div class="inline-block mb-6 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
+					<span class="text-xs font-mono text-secondary uppercase tracking-widest">Available for Freelance</span>
 				</div>
 
-				<h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight tracking-tight animate-fade-in-up">
-					Ezekiel Njuguna
+				<h1 id="hero-title" class="text-6xl md:text-8xl lg:text-9xl font-heading font-bold leading-none tracking-tighter mb-8 text-white">
+					IGNITE <br />
+					<span class="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-accent">YOUR GAME</span>
 				</h1>
-				<p class="text-2xl md:text-3xl lg:text-4xl mb-4 font-semibold animate-fade-in-up" style="animation-delay: 0.1s;">
-					<span class="gradient-text">Expert iGaming Content Writer</span>
-				</p>
-				<p class="text-lg md:text-xl lg:text-2xl mb-8 text-blue-200 font-light animate-fade-in-up" style="animation-delay: 0.2s;">Casino Reviews • Sports Betting • SEO Content</p>
 
-				<!-- Pain Points Hook -->
-				<div class="mb-8 space-y-3 text-left max-w-2xl mx-auto glass rounded-xl p-6 animate-fade-in-up" style="animation-delay: 0.3s;">
-					<div class="flex items-start space-x-3">
-						<div class="w-10 h-10 bg-gradient-to-br from-secondary to-secondary-dark rounded-lg flex items-center justify-center flex-shrink-0">
-							<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-							</svg>
-						</div>
-						<p class="text-lg leading-relaxed">Creating engaging casino content that ranks?</p>
-					</div>
-					<div class="flex items-start space-x-3">
-						<div class="w-10 h-10 bg-gradient-to-br from-accent to-accent-dark rounded-lg flex items-center justify-center flex-shrink-0">
-							<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-							</svg>
-						</div>
-						<p class="text-lg leading-relaxed">Struggling with SEO for your betting site?</p>
-					</div>
-					<div class="flex items-start space-x-3">
-						<div class="w-10 h-10 bg-gradient-to-br from-primary-light to-primary rounded-lg flex items-center justify-center flex-shrink-0">
-							<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-							</svg>
-						</div>
-						<p class="text-lg leading-relaxed">Need content that actually converts players?</p>
-					</div>
+				<p id="hero-subtitle" class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
+					World-class content for the iGaming industry. <br/>
+					<span class="text-white">Casino. Sports. eSports.</span>
+				</p>
+
+				<div class="flex flex-col sm:flex-row gap-6 justify-center items-center hero-btn">
+					<a href="#contact" class="group relative px-8 py-4 bg-secondary text-dark font-bold text-lg rounded-none skew-x-[-10deg] hover:skew-x-0 transition-transform duration-300">
+						<span class="inline-block skew-x-[10deg] group-hover:skew-x-0 transition-transform duration-300">Start Project</span>
+					</a>
+					<a href="#portfolio" class="text-white font-mono hover:text-secondary transition-colors text-sm uppercase tracking-widest border-b border-transparent hover:border-secondary">
+						View Selected Works
+					</a>
 				</div>
-
-				<p class="text-xl md:text-2xl mb-10 leading-relaxed max-w-3xl mx-auto font-light animate-fade-in-up" style="animation-delay: 0.4s;">
-					I specialize in creating SEO-optimized content that elevates your platform, helping you stand out in the competitive iGaming space.
-				</p>
-
-				<a href="#contact" class="inline-block bg-secondary hover:bg-secondary-dark text-dark font-bold py-4 px-10 rounded-lg transition-all duration-300 text-lg shadow-lg hover:shadow-glow hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-secondary/50 btn-glow animate-fade-in-up" style="animation-delay: 0.5s;">
-					Book Free Consultation
-				</a>
-
-				<!-- Scroll Indicator -->
-				<div class="mt-16 animate-bounce">
-					<svg class="w-6 h-6 mx-auto text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-					</svg>
+			</div>
+			
+			<!-- Scroll Indicator (Bottom Right) -->
+			<div class="absolute bottom-10 right-10 hidden md:block">
+				<div class="flex flex-col items-center gap-4">
+					<span class="text-xs font-mono text-gray-500 rotate-90 origin-bottom translate-y-8">SCROLL</span>
+					<div class="w-[1px] h-24 bg-gradient-to-b from-transparent via-gray-500 to-transparent"></div>
 				</div>
 			</div>
 		</section>
@@ -605,135 +746,7 @@ const clientLogos = [
 			</div>
 		</footer>
 
-		<!-- JavaScript for Interactivity -->
-		<script>
-			// Navbar show on scroll
-			const navbar = document.getElementById('navbar');
-			let lastScrollY = window.scrollY;
-			
-			window.addEventListener('scroll', () => {
-				if (window.scrollY > 100) {
-					navbar.style.transform = 'translateY(0)';
-				} else {
-					navbar.style.transform = 'translateY(-100%)';
-				}
-				lastScrollY = window.scrollY;
-			});
 
-			// Scroll Reveal Animation
-			const observerOptions = {
-				root: null,
-				rootMargin: '0px',
-				threshold: 0.1
-			};
 
-			const observer = new IntersectionObserver((entries) => {
-				entries.forEach(entry => {
-					if (entry.isIntersecting) {
-						entry.target.classList.add('revealed');
-					}
-				});
-			}, observerOptions);
-
-			document.querySelectorAll('.scroll-reveal').forEach(el => {
-				observer.observe(el);
-			});
-
-			// Portfolio Filter
-			const filterButtons = document.querySelectorAll('.portfolio-filter');
-			const portfolioItems = document.querySelectorAll('.portfolio-item');
-
-			filterButtons.forEach(button => {
-				button.addEventListener('click', () => {
-					const filter = button.dataset.filter;
-					
-					// Update active button
-					filterButtons.forEach(btn => {
-						btn.classList.remove('bg-primary', 'text-white');
-						btn.classList.add('bg-white', 'text-dark');
-					});
-					button.classList.remove('bg-white', 'text-dark');
-					button.classList.add('bg-primary', 'text-white');
-					
-					// Filter items
-					portfolioItems.forEach(item => {
-						if (filter === 'all' || item.dataset.category === filter) {
-							item.style.display = 'block';
-							item.style.animation = 'fadeInUp 0.5s ease forwards';
-						} else {
-							item.style.display = 'none';
-						}
-					});
-				});
-			});
-
-			// Form handling
-			const form = document.getElementById('contact-form');
-			const submitBtn = document.getElementById('submit-btn');
-			const btnText = document.getElementById('btn-text');
-			const btnSpinner = document.getElementById('btn-spinner');
-			const formStatus = document.getElementById('form-status');
-
-			form?.addEventListener('submit', async (e) => {
-				e.preventDefault();
-				
-				// Show loading state
-				btnText.textContent = 'Sending...';
-				btnSpinner.classList.remove('hidden');
-				submitBtn.disabled = true;
-				
-				try {
-					const response = await fetch(form.action, {
-						method: 'POST',
-						body: new FormData(form),
-						headers: { 'Accept': 'application/json' }
-					});
-					
-					if (response.ok) {
-						formStatus.className = 'mb-6 p-4 rounded-lg form-success';
-						formStatus.textContent = 'Thank you! Your message has been sent successfully. I\'ll get back to you soon.';
-						formStatus.classList.remove('hidden');
-						form.reset();
-					} else {
-						throw new Error('Form submission failed');
-					}
-				} catch (error) {
-					formStatus.className = 'mb-6 p-4 rounded-lg form-error';
-					formStatus.textContent = 'Oops! There was a problem sending your message. Please try again.';
-					formStatus.classList.remove('hidden');
-				} finally {
-					btnText.textContent = 'Send Message';
-					btnSpinner.classList.add('hidden');
-					submitBtn.disabled = false;
-				}
-			});
-
-			// Counter Animation
-			const counters = document.querySelectorAll('.counter');
-			const counterObserver = new IntersectionObserver((entries) => {
-				entries.forEach(entry => {
-					if (entry.isIntersecting) {
-						const counter = entry.target;
-						const target = parseInt(counter.dataset.target) || 0;
-						const suffix = counter.textContent.replace(/[0-9]/g, '');
-						let current = 0;
-						const increment = target / 50;
-						const updateCounter = () => {
-							if (current < target) {
-								current += increment;
-								counter.textContent = Math.ceil(current) + suffix;
-								requestAnimationFrame(updateCounter);
-							} else {
-								counter.textContent = target + suffix;
-							}
-						};
-						updateCounter();
-						counterObserver.unobserve(counter);
-					}
-				});
-			}, { threshold: 0.5 });
-
-			counters.forEach(counter => counterObserver.observe(counter));
-		</script>
 	</body>
 </html>
